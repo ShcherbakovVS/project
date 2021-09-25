@@ -1,0 +1,24 @@
+image: node:latest
+
+stages:
+  - test
+  - production
+test:
+  stage: test
+  script:
+    - apt-get update -qy
+    - npm install -g typescript
+    - npm install -g tslint
+    - tslint -c tslint.json index.ts
+    - tslint -c tslint.json App.js
+production:
+  type: deploy
+  stage: production
+  image: ruby:latest
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem intstall dpl
+    - dpl --provider=heroku --app=projecturfu --api-key=$HEROKU_API_KEY
+only:
+    - master
